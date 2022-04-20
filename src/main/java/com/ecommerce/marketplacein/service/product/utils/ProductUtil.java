@@ -69,7 +69,7 @@ public class ProductUtil {
     }
 
     public static void reorganizeProductMedias(List<ProductItemPictureDTO> medias) {
-        medias.forEach(m -> m.setOrder(ProductUtil.getOrderOfImage(m.getOrder())));
+        //medias.forEach(m -> m.setOrder(ProductUtil.getOrderOfImage(m.getOrder())));
     }
 
     public static String getOrderOfImage(String order) {

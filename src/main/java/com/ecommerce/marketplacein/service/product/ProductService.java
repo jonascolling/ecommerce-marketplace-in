@@ -5,6 +5,6 @@ import com.marketplace.marketplacecommon.product.dto.ProductDTO;
 
 public interface ProductService {
 
-    void receiveProduct(ProductDTO productDTO) throws InvalidProductException;
+    void receiveProduct(ProductDTO productDTO);
 
 }

@@ -1,0 +1,1 @@
+INSERT INTO key_generator (code) VALUES ('PRODUCT_CODE');

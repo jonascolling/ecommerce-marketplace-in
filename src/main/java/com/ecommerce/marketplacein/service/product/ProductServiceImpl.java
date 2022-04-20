@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductCodeBuilder productCodeBuilder;
 
     @Override
-    public void receiveProduct(ProductDTO productDTO) throws InvalidProductException {
+    public void receiveProduct(ProductDTO productDTO) {
 
         List<String> colors = getColorVariations(productDTO);
         List<String> categories = getAttributeCategories(productDTO);
