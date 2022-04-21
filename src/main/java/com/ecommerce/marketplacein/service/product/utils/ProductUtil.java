@@ -68,23 +68,6 @@ public class ProductUtil {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", Strings.EMPTY);
     }
 
-    public static void reorganizeProductMedias(List<ProductItemPictureDTO> medias) {
-        //medias.forEach(m -> m.setOrder(ProductUtil.getOrderOfImage(m.getOrder())));
-    }
-
-    public static String getOrderOfImage(String order) {
-        if (Strings.isNotBlank(order)) {
-            if (order.length() > 2) {
-                return order.substring(order.length() - 2);
-            }
-            if (order.length() < 2) {
-                return "0" + order;
-            }
-            return order;
-        }
-        return "01";
-    }
-
     public static String getAttribute(List<ProductAttributeValueDTO> attributes, String attributeCode) {
         String attribute = Strings.EMPTY;
         if (!CollectionUtils.isEmpty(attributes)) {
