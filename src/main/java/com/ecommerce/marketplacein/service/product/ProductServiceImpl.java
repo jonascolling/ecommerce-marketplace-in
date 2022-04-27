@@ -1,6 +1,7 @@
 package com.ecommerce.marketplacein.service.product;
 
 import com.ecommerce.marketplacein.enums.ProductAttribute;
+import com.ecommerce.marketplacein.replication.EcommerceProductReplication;
 import com.ecommerce.marketplacein.service.product.utils.ProductUtil;
 import com.marketplace.marketplacecommon.ecommerceproduct.dto.EcommerceProductDTO;
 import com.marketplace.marketplacecommon.ecommerceproduct.dto.EcommerceProductItemDTO;
@@ -10,6 +11,7 @@ import com.marketplace.marketplacecommon.product.dto.ProductDTO;
 import com.marketplace.marketplacecommon.product.dto.ProductItemDTO;
 import com.marketplace.marketplacecommon.product.dto.ProductItemPictureDTO;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -19,12 +21,21 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    @Autowired
+    private EcommerceProductReplication ecommerceProductReplication;
+
     @Override
     public void receiveProduct(ProductDTO productDTO) {
 
+        List<EcommerceProductDTO> ecommerceProducts = populateEcommerceProductDto(productDTO);
+
+        ecommerceProducts.forEach(productDto -> ecommerceProductReplication.postEcommerceProduct(productDto));
+
+    }
+
+    private List<EcommerceProductDTO> populateEcommerceProductDto(ProductDTO productDTO) {
         List<String> colors = getColorVariations(productDTO);
         List<String> categories = getAttributeCategories(productDTO);
-        categories.add(productDTO.getGroupEcommerceCode());
 
         List<EcommerceProductDTO> listOfBaseProducts = new ArrayList<>();
 
@@ -38,8 +49,8 @@ public class ProductServiceImpl implements ProductService {
             ecommerceProductDTO.setProductItemPicture(ecommerceMedias);
 
             String colorCategory = colors.stream().findFirst().orElse(null);
-            categories.add(colorCategory);
-            ecommerceProductDTO.setCategories(categories);
+            ecommerceProductDTO.setCategories(new ArrayList<>(categories));
+            ecommerceProductDTO.getCategories().add(colorCategory);
 
             ecommerceProductDTO.setProductItem(populateEcommerceVariants(productDTO.getProductItem()));
 
@@ -49,12 +60,12 @@ public class ProductServiceImpl implements ProductService {
                 EcommerceProductDTO ecommerceProductDTO = populateEcommerceBaseProduct(productDTO);
 
                 List<ProductItemDTO> variants = ProductUtil.getVariantsByColor(productDTO, color);
-                List<ProductItemPictureDTO> mediasOfThisColor = ProductUtil.getMediasByAnyVariant(productDTO, variants);
+                List<ProductItemPictureDTO> mediasOfThisColor = ProductUtil.getMediasByAnyVariant(variants);
                 List<EcommerceProductItemPictureDTO> ecommerceMediasOfThisColor = populateEcommercePictures(mediasOfThisColor);
                 ecommerceProductDTO.setProductItemPicture(ecommerceMediasOfThisColor);
 
-                categories.add(color);
-                ecommerceProductDTO.setCategories(categories);
+                ecommerceProductDTO.setCategories(new ArrayList<>(categories));
+                ecommerceProductDTO.getCategories().add(color);
 
                 ecommerceProductDTO.setProductItem(populateEcommerceVariants(variants));
 
@@ -62,8 +73,7 @@ public class ProductServiceImpl implements ProductService {
             });
         }
 
-        System.out.println("as");
-
+        return listOfBaseProducts;
     }
 
     private List<EcommerceProductItemDTO> populateEcommerceVariants(List<ProductItemDTO> variants) {
@@ -80,6 +90,11 @@ public class ProductServiceImpl implements ProductService {
             ecommerceVariant.setDeliveryTimeDays(variant.getDeliveryTimeDays());
             ecommerceVariant.setObsolete(variant.isObsolete());
             ecommerceVariant.setStock(variant.getStock());
+            ecommerceVariant.setSize(variant.getSize());
+            ecommerceVariant.setFullPrice(variant.getFullPrice());
+            ecommerceVariant.setPrice(variant.getPrice());
+            ecommerceVariant.setVariantSkuSellerId(variant.getVariantSkuSellerId());
+            ecommerceVariant.setEan(variant.getEan());
             ecommerceVariants.add(ecommerceVariant);
         });
 

@@ -39,13 +39,14 @@ public class ProductUtil {
     public static final Map<String, String> SELLER_MAP = new HashMap<>() {{
         put("9", "arezzo");
         put("10", "schutz");
+        put("11", "vans");
     }};
 
     public static List<ProductItemDTO> getVariantsByColor(ProductDTO productDto, String color) {
         return productDto.getProductItem().stream().filter(v -> v.getColor() != null && v.getColor().equals(color)).collect(Collectors.toList());
     }
 
-    public static List<ProductItemPictureDTO> getMediasByAnyVariant(ProductDTO productDto, List<ProductItemDTO> variants) {
+    public static List<ProductItemPictureDTO> getMediasByAnyVariant(List<ProductItemDTO> variants) {
         ProductItemDTO variant = variants.stream().filter(v -> !CollectionUtils.isEmpty(v.getProductItemPicture())).findAny().orElse(null);
         return variant != null ? variant.getProductItemPicture() : null;
     }
