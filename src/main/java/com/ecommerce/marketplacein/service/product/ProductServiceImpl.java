@@ -3,13 +3,8 @@ package com.ecommerce.marketplacein.service.product;
 import com.ecommerce.marketplacein.enums.ProductAttribute;
 import com.ecommerce.marketplacein.replication.EcommerceProductReplication;
 import com.ecommerce.marketplacein.service.product.utils.ProductUtil;
-import com.marketplace.marketplacecommon.ecommerceproduct.dto.EcommerceProductDTO;
-import com.marketplace.marketplacecommon.ecommerceproduct.dto.EcommerceProductItemDTO;
-import com.marketplace.marketplacecommon.ecommerceproduct.dto.EcommerceProductItemPictureDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductAttributeValueDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductItemDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductItemPictureDTO;
+import com.marketplace.marketplacecommon.ecommerceproduct.dto.*;
+import com.marketplace.marketplacecommon.product.dto.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +21,28 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void receiveProduct(ProductDTO productDTO) {
-
         List<EcommerceProductDTO> ecommerceProducts = populateEcommerceProductDto(productDTO);
-
         ecommerceProducts.forEach(productDto -> ecommerceProductReplication.postEcommerceProduct(productDto));
+    }
 
+    @Override
+    public void updatePrice(ProductPriceUpdateDTO productPriceUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductPrice(new EcommerceProductPriceUpdateDTO(productPriceUpdateDTO, ProductUtil.SELLER_MAP.get(productPriceUpdateDTO.getSellerId())));
+    }
+
+    @Override
+    public void updateStock(ProductStockUpdateDTO productStockUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductStock(new EcommerceProductStockUpdateDTO(productStockUpdateDTO, ProductUtil.SELLER_MAP.get(productStockUpdateDTO.getSellerId())));
+    }
+
+    @Override
+    public void updateDeliveryData(ProductDeliveryDataUpdateDTO productDeliveryDataUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductDeliveryData(new EcommerceProductDeliveryDataUpdateDTO(productDeliveryDataUpdateDTO, ProductUtil.SELLER_MAP.get(productDeliveryDataUpdateDTO.getSellerId())));
+    }
+
+    @Override
+    public void updateStatus(ProductStatusUpdateDTO productStatusUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductStatus(new EcommerceProductStatusUpdateDTO(productStatusUpdateDTO, ProductUtil.SELLER_MAP.get(productStatusUpdateDTO.getSellerId())));
     }
 
     private List<EcommerceProductDTO> populateEcommerceProductDto(ProductDTO productDTO) {
