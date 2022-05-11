@@ -1,17 +1,17 @@
 package com.ecommerce.marketplacein.service.product;
 
-import com.marketplace.marketplacecommon.product.dto.*;
+import com.marketplace.marketplacecommon.dto.product.*;
 
 public interface ProductService {
 
-    void receiveProduct(ProductDTO productDTO);
+    void receiveProduct(ProductDto productDTO);
 
-    void updatePrice(ProductPriceUpdateDTO productPriceUpdateDTO);
+    void updatePrice(ProductPriceUpdateDto productPriceUpdateDTO);
 
-    void updateStock(ProductStockUpdateDTO productStockUpdateDTO);
+    void updateStock(ProductStockUpdateDto productStockUpdateDTO);
 
-    void updateDeliveryData(ProductDeliveryDataUpdateDTO productDeliveryDataUpdateDTO);
+    void updateDeliveryData(ProductDeliveryDataUpdateDto productDeliveryDataUpdateDTO);
 
-    void updateStatus(ProductStatusUpdateDTO productStatusUpdateDTO);
+    void updateStatus(ProductStatusUpdateDto productStatusUpdateDTO);
 
 }

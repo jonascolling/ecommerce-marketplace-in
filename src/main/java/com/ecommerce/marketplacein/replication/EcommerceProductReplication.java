@@ -1,21 +1,17 @@
 package com.ecommerce.marketplacein.replication;
 
-import com.marketplace.marketplacecommon.ecommerceproduct.dto.*;
-import com.marketplace.marketplacecommon.product.dto.ProductDeliveryDataUpdateDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductPriceUpdateDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductStatusUpdateDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductStockUpdateDTO;
+import com.marketplace.marketplacecommon.dto.ecommerceproduct.*;
 
 public interface EcommerceProductReplication {
 
-    void postEcommerceProduct(EcommerceProductDTO ecommerceProductDTO);
+    void postEcommerceProduct(EcommerceProductDto ecommerceProductDTO);
 
-    void putEcommerceProductPrice(EcommerceProductPriceUpdateDTO ecommerceProductPriceUpdateDTO);
+    void putEcommerceProductPrice(EcommerceProductPriceUpdateDto ecommerceProductPriceUpdateDTO);
 
-    void putEcommerceProductStock(EcommerceProductStockUpdateDTO ecommerceProductStockUpdateDTO);
+    void putEcommerceProductStock(EcommerceProductStockUpdateDto ecommerceProductStockUpdateDTO);
 
-    void putEcommerceProductDeliveryData(EcommerceProductDeliveryDataUpdateDTO ecommerceProductDeliveryDataUpdateDTO);
+    void putEcommerceProductDeliveryData(EcommerceProductDeliveryDataUpdateDto ecommerceProductDeliveryDataUpdateDTO);
 
-    void putEcommerceProductStatus(EcommerceProductStatusUpdateDTO ecommerceProductStatusUpdateDTO);
+    void putEcommerceProductStatus(EcommerceProductStatusUpdateDto ecommerceProductStatusUpdateDTO);
 
 }

@@ -3,8 +3,8 @@ package com.ecommerce.marketplacein.service.product;
 import com.ecommerce.marketplacein.enums.ProductAttribute;
 import com.ecommerce.marketplacein.replication.EcommerceProductReplication;
 import com.ecommerce.marketplacein.service.product.utils.ProductUtil;
-import com.marketplace.marketplacecommon.ecommerceproduct.dto.*;
-import com.marketplace.marketplacecommon.product.dto.*;
+import com.marketplace.marketplacecommon.dto.ecommerceproduct.*;
+import com.marketplace.marketplacecommon.dto.product.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,44 +20,44 @@ public class ProductServiceImpl implements ProductService {
     private EcommerceProductReplication ecommerceProductReplication;
 
     @Override
-    public void receiveProduct(ProductDTO productDTO) {
-        List<EcommerceProductDTO> ecommerceProducts = populateEcommerceProductDto(productDTO);
+    public void receiveProduct(ProductDto productDTO) {
+        List<EcommerceProductDto> ecommerceProducts = populateEcommerceProductDto(productDTO);
         ecommerceProducts.forEach(productDto -> ecommerceProductReplication.postEcommerceProduct(productDto));
     }
 
     @Override
-    public void updatePrice(ProductPriceUpdateDTO productPriceUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductPrice(new EcommerceProductPriceUpdateDTO(productPriceUpdateDTO, ProductUtil.SELLER_MAP.get(productPriceUpdateDTO.getSellerId())));
+    public void updatePrice(ProductPriceUpdateDto productPriceUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductPrice(new EcommerceProductPriceUpdateDto(productPriceUpdateDTO, ProductUtil.SELLER_MAP.get(productPriceUpdateDTO.getSellerId())));
     }
 
     @Override
-    public void updateStock(ProductStockUpdateDTO productStockUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductStock(new EcommerceProductStockUpdateDTO(productStockUpdateDTO, ProductUtil.SELLER_MAP.get(productStockUpdateDTO.getSellerId())));
+    public void updateStock(ProductStockUpdateDto productStockUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductStock(new EcommerceProductStockUpdateDto(productStockUpdateDTO, ProductUtil.SELLER_MAP.get(productStockUpdateDTO.getSellerId())));
     }
 
     @Override
-    public void updateDeliveryData(ProductDeliveryDataUpdateDTO productDeliveryDataUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductDeliveryData(new EcommerceProductDeliveryDataUpdateDTO(productDeliveryDataUpdateDTO, ProductUtil.SELLER_MAP.get(productDeliveryDataUpdateDTO.getSellerId())));
+    public void updateDeliveryData(ProductDeliveryDataUpdateDto productDeliveryDataUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductDeliveryData(new EcommerceProductDeliveryDataUpdateDto(productDeliveryDataUpdateDTO, ProductUtil.SELLER_MAP.get(productDeliveryDataUpdateDTO.getSellerId())));
     }
 
     @Override
-    public void updateStatus(ProductStatusUpdateDTO productStatusUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductStatus(new EcommerceProductStatusUpdateDTO(productStatusUpdateDTO, ProductUtil.SELLER_MAP.get(productStatusUpdateDTO.getSellerId())));
+    public void updateStatus(ProductStatusUpdateDto productStatusUpdateDTO) {
+        ecommerceProductReplication.putEcommerceProductStatus(new EcommerceProductStatusUpdateDto(productStatusUpdateDTO, ProductUtil.SELLER_MAP.get(productStatusUpdateDTO.getSellerId())));
     }
 
-    private List<EcommerceProductDTO> populateEcommerceProductDto(ProductDTO productDTO) {
+    private List<EcommerceProductDto> populateEcommerceProductDto(ProductDto productDTO) {
         List<String> colors = getColorVariations(productDTO);
         List<String> categories = getAttributeCategories(productDTO);
 
-        List<EcommerceProductDTO> listOfBaseProducts = new ArrayList<>();
+        List<EcommerceProductDto> listOfBaseProducts = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(colors) || colors.size() == 1) {
-            EcommerceProductDTO ecommerceProductDTO = populateEcommerceBaseProduct(productDTO);
+            EcommerceProductDto ecommerceProductDTO = populateEcommerceBaseProduct(productDTO);
 
-            List<ProductItemDTO> variants = productDTO.getProductItem();
+            List<ProductItemDto> variants = productDTO.getProductItem();
 
-            List<ProductItemPictureDTO> medias = variants.stream().findFirst().get().getProductItemPicture();
-            List<EcommerceProductItemPictureDTO> ecommerceMedias = populateEcommercePictures(medias);
+            List<ProductItemPictureDto> medias = variants.stream().findFirst().get().getProductItemPicture();
+            List<EcommerceProductItemPictureDto> ecommerceMedias = populateEcommercePictures(medias);
             ecommerceProductDTO.setProductItemPicture(ecommerceMedias);
 
             String colorCategory = colors.stream().findFirst().orElse(null);
@@ -69,11 +69,11 @@ public class ProductServiceImpl implements ProductService {
             listOfBaseProducts.add(ecommerceProductDTO);
         } else {
             colors.forEach(color -> {
-                EcommerceProductDTO ecommerceProductDTO = populateEcommerceBaseProduct(productDTO);
+                EcommerceProductDto ecommerceProductDTO = populateEcommerceBaseProduct(productDTO);
 
-                List<ProductItemDTO> variants = ProductUtil.getVariantsByColor(productDTO, color);
-                List<ProductItemPictureDTO> mediasOfThisColor = ProductUtil.getMediasByAnyVariant(variants);
-                List<EcommerceProductItemPictureDTO> ecommerceMediasOfThisColor = populateEcommercePictures(mediasOfThisColor);
+                List<ProductItemDto> variants = ProductUtil.getVariantsByColor(productDTO, color);
+                List<ProductItemPictureDto> mediasOfThisColor = ProductUtil.getMediasByAnyVariant(variants);
+                List<EcommerceProductItemPictureDto> ecommerceMediasOfThisColor = populateEcommercePictures(mediasOfThisColor);
                 ecommerceProductDTO.setProductItemPicture(ecommerceMediasOfThisColor);
 
                 ecommerceProductDTO.setCategories(new ArrayList<>(categories));
@@ -88,11 +88,11 @@ public class ProductServiceImpl implements ProductService {
         return listOfBaseProducts;
     }
 
-    private List<EcommerceProductItemDTO> populateEcommerceVariants(List<ProductItemDTO> variants) {
-        List<EcommerceProductItemDTO> ecommerceVariants = new ArrayList<>();
+    private List<EcommerceProductItemDto> populateEcommerceVariants(List<ProductItemDto> variants) {
+        List<EcommerceProductItemDto> ecommerceVariants = new ArrayList<>();
 
         variants.forEach(variant -> {
-            EcommerceProductItemDTO ecommerceVariant = new EcommerceProductItemDTO();
+            EcommerceProductItemDto ecommerceVariant = new EcommerceProductItemDto();
             ecommerceVariant.setName(variant.getName());
             ecommerceVariant.setProductItemId(variant.getProductItemId());
             ecommerceVariant.setWeight(variant.getWeight());
@@ -113,9 +113,9 @@ public class ProductServiceImpl implements ProductService {
         return ecommerceVariants;
     }
 
-    private EcommerceProductDTO populateEcommerceBaseProduct(ProductDTO productDTO) {
+    private EcommerceProductDto populateEcommerceBaseProduct(ProductDto productDTO) {
 
-        List<ProductAttributeValueDTO> attributes = productDTO.getAttributeValue();
+        List<ProductAttributeValueDto> attributes = productDTO.getAttributeValue();
         String productHeelSizeString = ProductUtil.getAttribute(attributes, ProductAttribute.HEELSIZE.getAttribute());
         Double productHeelSize = Strings.isNotBlank(productHeelSizeString) ? Double.valueOf(productHeelSizeString) : null;
         String productBagDimension = ProductUtil.getAttribute(attributes, ProductAttribute.BAGDIMENSION.getAttribute());
@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
 
         String productDescription = ProductUtil.removeHtmlTags(productDTO.getDescription());
 
-        EcommerceProductDTO ecommerceProductDTO = new EcommerceProductDTO();
+        EcommerceProductDto ecommerceProductDTO = new EcommerceProductDto();
         ecommerceProductDTO.setName(productDTO.getName());
         ecommerceProductDTO.setDescription(productDescription);
         ecommerceProductDTO.setBrand(productDTO.getBrand());
@@ -139,11 +139,11 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    private List<EcommerceProductItemPictureDTO> populateEcommercePictures(List<ProductItemPictureDTO> medias) {
+    private List<EcommerceProductItemPictureDto> populateEcommercePictures(List<ProductItemPictureDto> medias) {
 
-        List<EcommerceProductItemPictureDTO> ecommerceMedias = new ArrayList<>();
+        List<EcommerceProductItemPictureDto> ecommerceMedias = new ArrayList<>();
         medias.forEach(media -> {
-            EcommerceProductItemPictureDTO ecommerceMedia = new EcommerceProductItemPictureDTO();
+            EcommerceProductItemPictureDto ecommerceMedia = new EcommerceProductItemPictureDto();
             ecommerceMedia.setUrl(media.getPicture());
             ecommerceMedia.setOrder(getOrderOfImage(media.getOrder().toString()));
             ecommerceMedias.add(ecommerceMedia);
@@ -165,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
         return "01";
     }
 
-    private List<String> getAttributeCategories(ProductDTO productDTO) {
+    private List<String> getAttributeCategories(ProductDto productDTO) {
         List<String> attributeCategories = new ArrayList<>();
 
         String materialAttrCode = ProductAttribute.MATERIAL.getAttribute();
@@ -190,7 +190,7 @@ public class ProductServiceImpl implements ProductService {
         return attributeCategories;
     }
 
-    private List<String> getColorVariations(ProductDTO productDTO) {
+    private List<String> getColorVariations(ProductDto productDTO) {
         List<String> colors = new ArrayList<>();
 
         productDTO.getProductItem().forEach(i -> {

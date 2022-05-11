@@ -1,10 +1,10 @@
 package com.ecommerce.marketplacein.service.product.utils;
 
 import com.ecommerce.marketplacein.enums.ProductAttribute;
-import com.marketplace.marketplacecommon.product.dto.ProductAttributeValueDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductItemDTO;
-import com.marketplace.marketplacecommon.product.dto.ProductItemPictureDTO;
+import com.marketplace.marketplacecommon.dto.product.ProductAttributeValueDto;
+import com.marketplace.marketplacecommon.dto.product.ProductDto;
+import com.marketplace.marketplacecommon.dto.product.ProductItemDto;
+import com.marketplace.marketplacecommon.dto.product.ProductItemPictureDto;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.util.CollectionUtils;
 
@@ -42,12 +42,12 @@ public class ProductUtil {
         put("11", "vans");
     }};
 
-    public static List<ProductItemDTO> getVariantsByColor(ProductDTO productDto, String color) {
+    public static List<ProductItemDto> getVariantsByColor(ProductDto productDto, String color) {
         return productDto.getProductItem().stream().filter(v -> v.getColor() != null && v.getColor().equals(color)).collect(Collectors.toList());
     }
 
-    public static List<ProductItemPictureDTO> getMediasByAnyVariant(List<ProductItemDTO> variants) {
-        ProductItemDTO variant = variants.stream().filter(v -> !CollectionUtils.isEmpty(v.getProductItemPicture())).findAny().orElse(null);
+    public static List<ProductItemPictureDto> getMediasByAnyVariant(List<ProductItemDto> variants) {
+        ProductItemDto variant = variants.stream().filter(v -> !CollectionUtils.isEmpty(v.getProductItemPicture())).findAny().orElse(null);
         return variant != null ? variant.getProductItemPicture() : null;
     }
 
@@ -69,10 +69,10 @@ public class ProductUtil {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", Strings.EMPTY);
     }
 
-    public static String getAttribute(List<ProductAttributeValueDTO> attributes, String attributeCode) {
+    public static String getAttribute(List<ProductAttributeValueDto> attributes, String attributeCode) {
         String attribute = Strings.EMPTY;
         if (!CollectionUtils.isEmpty(attributes)) {
-            for (ProductAttributeValueDTO attr : attributes) {
+            for (ProductAttributeValueDto attr : attributes) {
                 if (attributeCode.equalsIgnoreCase(attr.getAttributeEcommerceCode())) {
                     attribute = attr.getValue().toUpperCase();
                 }
@@ -81,13 +81,13 @@ public class ProductUtil {
         return attribute;
     }
 
-    public static List<String> getAttributes(ProductDTO productDTO, String... attributeLabels) {
+    public static List<String> getAttributes(ProductDto productDTO, String... attributeLabels) {
         List<String> attributes = new ArrayList<>();
         boolean hasStyleAtt = false;
 
         if (!CollectionUtils.isEmpty(productDTO.getAttributeValue())) {
             for (String attributeLabel : attributeLabels) {
-                for (ProductAttributeValueDTO attr : productDTO.getAttributeValue()) {
+                for (ProductAttributeValueDto attr : productDTO.getAttributeValue()) {
                     if (attr.getAttributeEcommerceCode().equalsIgnoreCase(attributeLabel)) {
                         attributes.add(attr.getValue().toUpperCase());
                     }
@@ -106,7 +106,7 @@ public class ProductUtil {
         return attributes;
     }
 
-    private static void verifyNameOfProductToAddStyle(List<String> attributes, ProductDTO source) {
+    private static void verifyNameOfProductToAddStyle(List<String> attributes, ProductDto source) {
         String name = source.getProductItem().stream().findFirst().get().getName();
         if (Strings.isNotBlank(name)) {
             String productName = name.toLowerCase().trim();

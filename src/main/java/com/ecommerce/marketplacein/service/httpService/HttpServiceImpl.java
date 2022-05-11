@@ -17,15 +17,13 @@ public class HttpServiceImpl implements HttpService {
     private static final Logger LOG = LogManager.getLogger(HttpServiceImpl.class);
 
     @Override
-    public <T> ResponseEntity<T> exchange(String url, HttpMethod method, Object body, Class<T> responseType) {
+    public <T> ResponseEntity<T> exchange(String url, HttpMethod method, Object body, HttpHeaders headers, Class<T> responseType) {
         ResponseEntity<T> response = null;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
         try {
             response = restTemplate.exchange(url, method, new HttpEntity<>(body, headers), responseType);
         } catch (HttpClientErrorException error) {
+            LOG.error(error);
             throw error;
         }
 
