@@ -5,6 +5,7 @@ import com.ecommerce.marketplacein.service.httpService.HttpService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.marketplacecommon.dto.order.OrderDto;
+import com.marketplace.marketplacecommon.dto.order.PaymentConfirmationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -29,6 +30,11 @@ public class CentralSellerOrderReplicationImpl implements CentralSellerOrderRepl
     @Override
     public void postCentralSellerOrder(OrderDto orderDto) throws IOException {
         sendObjectToCentralSeller(orderDto, "marketplace-order");
+    }
+
+    @Override
+    public void postCentralSellerOrderPaymentConfirmation(PaymentConfirmationDto paymentConfirmationDto) throws IOException {
+        sendObjectToCentralSeller(paymentConfirmationDto, "marketplace-order-paid");
     }
 
     private ResponseEntity<Object> sendObjectToCentralSeller(Object object, String type) throws IOException {

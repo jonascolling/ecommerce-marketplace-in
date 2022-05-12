@@ -1,4 +1,4 @@
-package com.ecommerce.marketplacein.controller.product;
+package com.ecommerce.marketplacein.controller;
 
 import com.ecommerce.marketplacein.service.product.ProductService;
 import com.marketplace.marketplacecommon.dto.product.*;

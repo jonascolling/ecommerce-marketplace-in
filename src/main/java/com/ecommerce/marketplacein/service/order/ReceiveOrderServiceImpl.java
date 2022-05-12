@@ -17,12 +17,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class OrderServiceImpl implements OrderService {
+public class ReceiveOrderServiceImpl implements ReceiveOrderService {
 
     private static final String PERSON = "PERSON";
-    private static final String CREDITCARD = "CREDITCARD";
-    private static final String BOLETO = "BOLETO";
-    private static final String PIX = "PIX";
     private static final String NORMAL = "NORMAL";
     private static final String DDD = "00";
     private static final String COR = "COR";
@@ -77,12 +74,12 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setItemsOrder(itemsOrderDtos);
 
         List<String> paymentType;
-        if (isCreditCard(ecommerceOrderDto)) {
-            paymentType = Collections.singletonList(CREDITCARD);
-        } else if (isBoleto(ecommerceOrderDto)) {
-            paymentType = Collections.singletonList(BOLETO);
+        if (OrderUtil.isCreditCard(ecommerceOrderDto)) {
+            paymentType = Collections.singletonList(OrderUtil.CREDITCARD);
+        } else if (OrderUtil.isBoleto(ecommerceOrderDto)) {
+            paymentType = Collections.singletonList(OrderUtil.BOLETO);
         } else {
-            paymentType = Collections.singletonList(PIX);
+            paymentType = Collections.singletonList(OrderUtil.PIX);
         }
         orderDto.setPaymentTypes(paymentType);
 
@@ -102,35 +99,10 @@ public class OrderServiceImpl implements OrderService {
             orderPaymentDto.setTotalPaymentValue(pt.getPlannedAmount().doubleValue());
             orderPaymentDto.setEcommerceCardBrandId(NumberUtils.INTEGER_ONE);
             orderPaymentDto.setNumberInstallments(pt.getInstallments() != null ? pt.getInstallments().intValue() : NumberUtils.INTEGER_ONE);
-            if (isCreditCard(orderDto)) {
-                orderPaymentDto.setEcommerceCardId(orderDto.getPaymentInfo().getPk());
-                orderPaymentDto.setPayment(CREDITCARD);
-                orderPaymentDto.setEcommerceCardBrandId(0);
-            } else if (isBoleto(orderDto)) {
-                String ourNumber = removeSpecialCharacters(orderDto.getPaymentInfo().getOurNumber());
-                orderPaymentDto.setTicketNumber(StringUtils.isNotEmpty(ourNumber) ? Long.parseLong(ourNumber) : 0L);
-                orderPaymentDto.setPayment(BOLETO);
-            } else {
-                orderPaymentDto.setPayment(PIX);
-            }
+            OrderUtil.populatePayment(orderPaymentDto, orderDto);
         });
 
         return orderPaymentDto;
-    }
-
-    public static String removeSpecialCharacters(final String string) {
-        if (StringUtils.isNotEmpty(string)) {
-            return string.replaceAll("[^0-9a-zA-Z]+", "");
-        }
-        return StringUtils.EMPTY;
-    }
-
-    private boolean isBoleto(EcommerceOrderDto orderDto) {
-        return orderDto.getPaymentMode().getCode().equals("Boleto");
-    }
-
-    private boolean isCreditCard(EcommerceOrderDto orderDto) {
-        return orderDto.getPaymentMode().getCode().equals("CreditCard");
     }
 
     private ItemsOrderDto getProductItems(EcommerceConsignmentEntryDto consignmentEntry, EcommerceConsignmentDto ecommerceConsignmentDto) {
