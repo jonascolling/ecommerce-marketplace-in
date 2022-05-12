@@ -1,8 +1,10 @@
-package com.ecommerce.marketplacein.service.order;
+package com.ecommerce.marketplacein.utils;
 
 import com.marketplace.marketplacecommon.dto.ecommerceorder.EcommerceOrderDto;
 import com.marketplace.marketplacecommon.dto.order.OrderPaymentDto;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 public class OrderUtil {
 
@@ -37,6 +39,12 @@ public class OrderUtil {
             return string.replaceAll("[^0-9a-zA-Z]+", "");
         }
         return StringUtils.EMPTY;
+    }
+
+    public static HttpHeaders getEcommerceHeaderReques() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
     }
 
 }

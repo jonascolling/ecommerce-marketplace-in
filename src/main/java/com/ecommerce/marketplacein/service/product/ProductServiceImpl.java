@@ -2,7 +2,7 @@ package com.ecommerce.marketplacein.service.product;
 
 import com.ecommerce.marketplacein.enums.ProductAttribute;
 import com.ecommerce.marketplacein.replication.EcommerceProductReplication;
-import com.ecommerce.marketplacein.service.product.utils.ProductUtil;
+import com.ecommerce.marketplacein.utils.ProductUtil;
 import com.marketplace.marketplacecommon.dto.ecommerceproduct.*;
 import com.marketplace.marketplacecommon.dto.product.*;
 import org.apache.logging.log4j.util.Strings;
@@ -27,22 +27,70 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updatePrice(ProductPriceUpdateDto productPriceUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductPrice(new EcommerceProductPriceUpdateDto(productPriceUpdateDTO, ProductUtil.SELLER_MAP.get(productPriceUpdateDTO.getSellerId())));
+        ecommerceProductReplication.putEcommerceProductPrice(populateEcommerceProductPriceUpdateDto(productPriceUpdateDTO, ProductUtil.SELLER_MAP.get(productPriceUpdateDTO.getSellerId())));
     }
 
     @Override
     public void updateStock(ProductStockUpdateDto productStockUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductStock(new EcommerceProductStockUpdateDto(productStockUpdateDTO, ProductUtil.SELLER_MAP.get(productStockUpdateDTO.getSellerId())));
+        ecommerceProductReplication.putEcommerceProductStock(populateEcommerceProductStockUpdateDto(productStockUpdateDTO, ProductUtil.SELLER_MAP.get(productStockUpdateDTO.getSellerId())));
     }
 
     @Override
     public void updateDeliveryData(ProductDeliveryDataUpdateDto productDeliveryDataUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductDeliveryData(new EcommerceProductDeliveryDataUpdateDto(productDeliveryDataUpdateDTO, ProductUtil.SELLER_MAP.get(productDeliveryDataUpdateDTO.getSellerId())));
+        ecommerceProductReplication.putEcommerceProductDeliveryData(populateEcommerceProductDeliveryDataUpdateDto(productDeliveryDataUpdateDTO, ProductUtil.SELLER_MAP.get(productDeliveryDataUpdateDTO.getSellerId())));
     }
 
     @Override
     public void updateStatus(ProductStatusUpdateDto productStatusUpdateDTO) {
-        ecommerceProductReplication.putEcommerceProductStatus(new EcommerceProductStatusUpdateDto(productStatusUpdateDTO, ProductUtil.SELLER_MAP.get(productStatusUpdateDTO.getSellerId())));
+        ecommerceProductReplication.putEcommerceProductStatus(populateEcommerceProductStatusUpdateDto(productStatusUpdateDTO, ProductUtil.SELLER_MAP.get(productStatusUpdateDTO.getSellerId())));
+    }
+
+    private EcommerceProductStatusUpdateDto populateEcommerceProductStatusUpdateDto(ProductStatusUpdateDto productStatusUpdateDTO, String sellerCode) {
+        EcommerceProductStatusUpdateDto ecommerceProductStatusUpdateDto = new EcommerceProductStatusUpdateDto();
+        ecommerceProductStatusUpdateDto.setObsolete(productStatusUpdateDTO.isObsolete());
+        ecommerceProductStatusUpdateDto.setProductId(productStatusUpdateDTO.getProductId());
+        ecommerceProductStatusUpdateDto.setSentTimestampEcommerce(productStatusUpdateDTO.getSentTimestampEcommerce());
+        ecommerceProductStatusUpdateDto.setSkuSellerId(productStatusUpdateDTO.getSkuSellerId());
+        ecommerceProductStatusUpdateDto.setSellerCode(sellerCode);
+        ecommerceProductStatusUpdateDto.setProductId(productStatusUpdateDTO.getProductId());
+        return ecommerceProductStatusUpdateDto;
+    }
+
+    private EcommerceProductDeliveryDataUpdateDto populateEcommerceProductDeliveryDataUpdateDto(ProductDeliveryDataUpdateDto productDeliveryDataUpdateDTO, String sellerCode) {
+        EcommerceProductDeliveryDataUpdateDto ecommerceProductDeliveryDataUpdateDto = new EcommerceProductDeliveryDataUpdateDto();
+        ecommerceProductDeliveryDataUpdateDto.setWeight(productDeliveryDataUpdateDTO.getWeight());
+        ecommerceProductDeliveryDataUpdateDto.setLength(productDeliveryDataUpdateDTO.getLength());
+        ecommerceProductDeliveryDataUpdateDto.setWeight(productDeliveryDataUpdateDTO.getWeight());
+        ecommerceProductDeliveryDataUpdateDto.setWidth(productDeliveryDataUpdateDTO.getWidth());
+        ecommerceProductDeliveryDataUpdateDto.setProductId(productDeliveryDataUpdateDTO.getProductId());
+        ecommerceProductDeliveryDataUpdateDto.setSentTimestampEcommerce(productDeliveryDataUpdateDTO.getSentTimestampEcommerce());
+        ecommerceProductDeliveryDataUpdateDto.setSkuSellerId(productDeliveryDataUpdateDTO.getSkuSellerId());
+        ecommerceProductDeliveryDataUpdateDto.setSellerCode(sellerCode);
+        ecommerceProductDeliveryDataUpdateDto.setProductId(productDeliveryDataUpdateDTO.getProductId());
+        return ecommerceProductDeliveryDataUpdateDto;
+    }
+
+    private EcommerceProductStockUpdateDto populateEcommerceProductStockUpdateDto(ProductStockUpdateDto productStockUpdateDTO, String sellerCode) {
+        EcommerceProductStockUpdateDto ecommerceProductStockUpdateDto = new EcommerceProductStockUpdateDto();
+        ecommerceProductStockUpdateDto.setStock(productStockUpdateDTO.getStock());
+        ecommerceProductStockUpdateDto.setProductId(productStockUpdateDTO.getProductId());
+        ecommerceProductStockUpdateDto.setSentTimestampEcommerce(productStockUpdateDTO.getSentTimestampEcommerce());
+        ecommerceProductStockUpdateDto.setSkuSellerId(productStockUpdateDTO.getSkuSellerId());
+        ecommerceProductStockUpdateDto.setSellerCode(sellerCode);
+        ecommerceProductStockUpdateDto.setProductId(productStockUpdateDTO.getProductId());
+        return ecommerceProductStockUpdateDto;
+    }
+
+    private EcommerceProductPriceUpdateDto populateEcommerceProductPriceUpdateDto(ProductPriceUpdateDto productPriceUpdateDTO, String sellerCode) {
+        EcommerceProductPriceUpdateDto ecommerceProductPriceUpdateDto = new EcommerceProductPriceUpdateDto();
+        ecommerceProductPriceUpdateDto.setFullPrice(productPriceUpdateDTO.getFullPrice());
+        ecommerceProductPriceUpdateDto.setPrice(productPriceUpdateDTO.getPrice());
+        ecommerceProductPriceUpdateDto.setProductId(productPriceUpdateDTO.getProductId());
+        ecommerceProductPriceUpdateDto.setSentTimestampEcommerce(productPriceUpdateDTO.getSentTimestampEcommerce());
+        ecommerceProductPriceUpdateDto.setSkuSellerId(productPriceUpdateDTO.getSkuSellerId());
+        ecommerceProductPriceUpdateDto.setSellerCode(sellerCode);
+        ecommerceProductPriceUpdateDto.setProductId(productPriceUpdateDTO.getProductId());
+        return ecommerceProductPriceUpdateDto;
     }
 
     private List<EcommerceProductDto> populateEcommerceProductDto(ProductDto productDTO) {

@@ -1,4 +1,4 @@
-package com.ecommerce.marketplacein.service.product.utils;
+package com.ecommerce.marketplacein.utils;
 
 import com.ecommerce.marketplacein.enums.ProductAttribute;
 import com.marketplace.marketplacecommon.dto.product.ProductAttributeValueDto;
