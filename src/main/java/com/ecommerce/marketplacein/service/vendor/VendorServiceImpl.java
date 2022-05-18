@@ -30,6 +30,7 @@ public class VendorServiceImpl implements VendorService {
         ecommerceVendorDto.setNumber(vendorDto.getNumber());
         ecommerceVendorDto.setStreet(vendorDto.getStreet());
         ecommerceVendorDto.setCode(getCodeOfVendor(vendorDto.getName()));
+        ecommerceVendorDto.setExternalId(vendorDto.getExternalId());
 
         EcommerceAccountOfPaymentVendorDto ecommerceAccountOfPaymentVendorDto = new EcommerceAccountOfPaymentVendorDto();
         ecommerceAccountOfPaymentVendorDto.setAccountBankAccountNumber(vendorDto.getAccount().getAccountBankAccountNumber());
