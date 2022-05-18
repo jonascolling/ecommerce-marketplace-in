@@ -61,12 +61,8 @@ public class ProductUtil {
 
     public static String formattProductSize(String size) {
         size = size.replace(" ", "-");
-        size = removeAccents(size);
+        size = GenericUtils.removeAccents(size);
         return size.replaceAll("[^/0-9a-zA-Z--\\.]+", "");
-    }
-
-    public static String removeAccents(String str) {
-        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", Strings.EMPTY);
     }
 
     public static String getAttribute(List<ProductAttributeValueDto> attributes, String attributeCode) {

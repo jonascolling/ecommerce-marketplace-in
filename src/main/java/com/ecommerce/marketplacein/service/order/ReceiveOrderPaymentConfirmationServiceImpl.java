@@ -1,6 +1,7 @@
 package com.ecommerce.marketplacein.service.order;
 
 import com.ecommerce.marketplacein.replication.CentralSellerOrderReplication;
+import com.ecommerce.marketplacein.utils.GenericUtils;
 import com.ecommerce.marketplacein.utils.OrderUtil;
 import com.marketplace.marketplacecommon.dto.ecommerceorder.EcommerceConsignmentDto;
 import com.marketplace.marketplacecommon.dto.ecommerceorder.EcommercePaymentTransactionDto;
@@ -60,7 +61,7 @@ public class ReceiveOrderPaymentConfirmationServiceImpl implements ReceiveOrderP
         if (OrderUtil.isCreditCard(consignmentDto.getOrder())) {
             contentDto.setPayment(OrderUtil.CREDITCARD);
         } else if (OrderUtil.isBoleto(consignmentDto.getOrder())) {
-            String ourNumber = OrderUtil.removeSpecialCharacters(consignmentDto.getOrder().getPaymentInfo().getOurNumber());
+            String ourNumber = GenericUtils.removeSpecialCharacters(consignmentDto.getOrder().getPaymentInfo().getOurNumber());
             contentDto.setTicketNumber(Long.parseLong(ourNumber));
             contentDto.setPayment(OrderUtil.BOLETO);
         } else {

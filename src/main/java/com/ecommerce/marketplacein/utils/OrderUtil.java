@@ -26,19 +26,12 @@ public class OrderUtil {
             orderPaymentDto.setPayment(CREDITCARD);
             orderPaymentDto.setEcommerceCardBrandId(0);
         } else if (OrderUtil.isBoleto(orderDto)) {
-            String ourNumber = removeSpecialCharacters(orderDto.getPaymentInfo().getOurNumber());
+            String ourNumber = GenericUtils.removeSpecialCharacters(orderDto.getPaymentInfo().getOurNumber());
             orderPaymentDto.setTicketNumber(StringUtils.isNotEmpty(ourNumber) ? Long.parseLong(ourNumber) : 0L);
             orderPaymentDto.setPayment(BOLETO);
         } else {
             orderPaymentDto.setPayment(PIX);
         }
-    }
-
-    public static String removeSpecialCharacters(final String string) {
-        if (StringUtils.isNotEmpty(string)) {
-            return string.replaceAll("[^0-9a-zA-Z]+", "");
-        }
-        return StringUtils.EMPTY;
     }
 
     public static HttpHeaders getEcommerceHeaderReques() {
