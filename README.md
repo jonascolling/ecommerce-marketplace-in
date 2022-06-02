@@ -1,3 +1,3 @@
 ## ecommerce-marketplace-in
 
-#### Microservice to receive requests of a marketplace application.
+#### Microservice to process business rules of the marketplace application.
